@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আমার ফ্রেম এডিটর</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; padding: 20px; }
+        #canvas-container { position: relative; display: inline-block; margin-top: 20px; border: 5px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        canvas { max-width: 100%; height: auto; }
+        .controls { margin-top: 20px; background: #fff; padding: 20px; border-radius: 10px; display: inline-block; }
+        input[type="file"] { margin-bottom: 10px; }
+        button { background: #28a745; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; font-size: 16px; }
+        button:hover { background: #218838; }
+    </style>
+</head>
+<body>
+
+    <h2>সহজ ফ্রেম এডিটর</h2>
+    <p>আপনার ছবি আপলোড করুন এবং ফ্রেমসহ ডাউনলোড করুন</p>
+
+    <div class="controls">
+        <label>১. ছবি বাছুন:</label><br>
+        <input type="file" id="upload" accept="image/*"><br><br>
+        <button id="download">২. ডাউনলোড করুন</button>
+    </div>
+
+    <br>
+    <div id="canvas-container">
+        <canvas id="editorCanvas"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('editorCanvas');
+        const ctx = canvas.getContext('2d');
+        const upload = document.getElementById('upload');
+        const downloadBtn = document.getElementById('download');
+
+        // এখানে আপনার ফ্রেমের লিঙ্ক দিন (আপাতত একটি স্যাম্পল ফ্রেম দেওয়া আছে)
+        const frameImg = new Image();
+        frameImg.crossOrigin = "anonymous";
+        frameImg.src = 'https://i.ibb.co/XfXfXfX/frame.png'; // আপনার ফ্রেমের URL এখানে বসাবেন
+
+        let userImg = null;
+
+        upload.addEventListener('change', (e) => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                userImg = new Image();
+                userImg.onload = () => {
+                    drawCanvas();
+                };
+                userImg.src = event.target.result;
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        });
+
+        function drawCanvas() {
+            // ক্যানভাসের সাইজ ফ্রেমের সমান হবে (ধরা যাক ১০৮০x১০৮০)
+            canvas.width = 1080;
+            canvas.height = 1080;
+
+            if (userImg) {
+                // আগে ইউজারের ছবি ড্র হবে
+                ctx.drawImage(userImg, 0, 0, 1080, 1080);
+            }
+            
+            // তারপর ফ্রেমটি উপরে বসবে
+            ctx.drawImage(frameImg, 0, 0, 1080, 1080);
+        }
+
+        downloadBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = 'my-frame-photo.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+
+        // শুরুতে ফ্রেমটি লোড করে রাখা
+        frameImg.onload = () => {
+            canvas.width = 1080;
+            canvas.height = 1080;
+            ctx.drawImage(frameImg, 0, 0, 1080, 1080);
+        };
+    </script>
+</body>
+</html>
