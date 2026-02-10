@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 25.8.4.2 (Linux)"/>
+	<meta name="created" content="00:00:00"/>
+	<meta name="changed" content="00:00:00"/>
+	<style type="text/css">
+		@page { size: 8.27in 11.69in; margin: 0.79in }
+		p { margin-bottom: 0.1in; line-height: 115%; background: transparent }
+		pre { font-size: 10pt; font-family: "Liberation Mono", monospace; background: transparent }
+	</style>
+</head>
+<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;<span lang="hi-IN">আমার ফ্রেম এডিটর</span>&lt;/title&gt;
+    &lt;style&gt;
+        body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; padding: 20px; }
+        #canvas-container { position: relative; display: inline-block; margin-top: 20px; border: 5px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        canvas { max-width: 100%; height: auto; }
+        .controls { margin-top: 20px; background: #fff; padding: 20px; border-radius: 10px; display: inline-block; }
+        input[type=&quot;file&quot;] { margin-bottom: 10px; }
+        button { background: #28a745; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; font-size: 16px; }
+        button:hover { background: #218838; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;h2&gt;<span lang="hi-IN">সহজ ফ্রেম এডিটর</span>&lt;/h2&gt;
+    &lt;p&gt;<span lang="hi-IN">আপনার ছবি আপলোড করুন এবং ফ্রেমসহ ডাউনলোড করুন</span>&lt;/p&gt;
+
+    &lt;div class=&quot;controls&quot;&gt;
+        &lt;label&gt;<span lang="hi-IN">১</span>. <span lang="hi-IN">ছবি বাছুন</span>:&lt;/label&gt;&lt;br&gt;
+        &lt;input type=&quot;file&quot; id=&quot;upload&quot; accept=&quot;image/*&quot;&gt;&lt;br&gt;&lt;br&gt;
+        &lt;button id=&quot;download&quot;&gt;<span lang="hi-IN">২</span>. <span lang="hi-IN">ডাউনলোড করুন</span>&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;br&gt;
+    &lt;div id=&quot;canvas-container&quot;&gt;
+        &lt;canvas id=&quot;editorCanvas&quot;&gt;&lt;/canvas&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        const canvas = document.getElementById('editorCanvas');
+        const ctx = canvas.getContext('2d');
+        const upload = document.getElementById('upload');
+        const downloadBtn = document.getElementById('download');
+
+        // <span lang="hi-IN">এখানে আপনার ফ্রেমের লিঙ্ক দিন </span>(<span lang="hi-IN">আপাতত একটি স্যাম্পল ফ্রেম দেওয়া আছে</span>)
+        const frameImg = new Image();
+        frameImg.crossOrigin = &quot;anonymous&quot;;
+        frameImg.src = 'https://i.ibb.co/XfXfXfX/frame.png'; // <span lang="hi-IN">আপনার ফ্রেমের </span>URL <span lang="hi-IN">এখানে বসাবেন</span>
+
+        let userImg = null;
+
+        upload.addEventListener('change', (e) =&gt; {
+            const reader = new FileReader();
+            reader.onload = (event) =&gt; {
+                userImg = new Image();
+                userImg.onload = () =&gt; {
+                    drawCanvas();
+                };
+                userImg.src = event.target.result;
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        });
+
+        function drawCanvas() {
+            // <span lang="hi-IN">ক্যানভাসের সাইজ ফ্রেমের সমান হবে </span>(<span lang="hi-IN">ধরা যাক ১০৮০</span>x<span lang="hi-IN">১০৮০</span>)
+            canvas.width = 1080;
+            canvas.height = 1080;
+
+            if (userImg) {
+                // <span lang="hi-IN">আগে ইউজারের ছবি ড্র হবে</span>
+                ctx.drawImage(userImg, 0, 0, 1080, 1080);
+            }
+            
+            // <span lang="hi-IN">তারপর ফ্রেমটি উপরে বসবে</span>
+            ctx.drawImage(frameImg, 0, 0, 1080, 1080);
+        }
+
+        downloadBtn.addEventListener('click', () =&gt; {
+            const link = document.createElement('a');
+            link.download = 'my-frame-photo.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+
+        // <span lang="hi-IN">শুরুতে ফ্রেমটি লোড করে রাখা</span>
+        frameImg.onload = () =&gt; {
+            canvas.width = 1080;
+            canvas.height = 1080;
+            ctx.drawImage(frameImg, 0, 0, 1080, 1080);
+        };
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+</body>
+</html>
